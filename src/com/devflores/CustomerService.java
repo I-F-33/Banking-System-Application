@@ -17,8 +17,24 @@ public class CustomerService {
     }
 
     public Long generateAccountNumber() {
-        Long bankIdentificationNum = 4_000_000_000_000_000L;
-        Long accNum = bankIdentificationNum + (long) (Math.random() * 1000000000L);
+    	Integer sum = 0;
+        String bankIdentificationNum = "400000";
+        Long random10Digits = ThreadLocalRandom.current().nextLong(999999999);
+        String randomTenDigits = String.format("%09d",random10Digits);
+        String first15Digits = bankIdentificationNum.concat(randomTenDigits);
+
+        for (int i = 0; i < first15Digits.length(); i++) {
+            Integer n = Integer.parseInt(String.valueOf(first15Digits.charAt(i)));
+            if (i % 2 == 0) {
+                n *= 2;
+                if(n > 9) {
+                    n -= 9;
+                }
+            }
+            sum += n;
+        }
+        String checkSum = String.valueOf((sum*9)%10);
+        Long accNum = Long.parseLong(first15Digits.concat(checkSum));
         System.out.println("Your card number has been created: \n" + accNum);
         return accNum;
     }
